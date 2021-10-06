@@ -3,12 +3,16 @@ package com.ocanha.retrofitcomkotlin.views
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.ocanha.retrofitcomkotlin.databinding.ActivityLoginBinding
+import com.ocanha.retrofitcomkotlin.model.UserSession
 import com.ocanha.retrofitcomkotlin.repositories.UserRepository
 import com.ocanha.retrofitcomkotlin.rest.RetrofitService
-import com.ocanha.retrofitcomkotlin.utils.Validator
+import com.ocanha.retrofitcomkotlin.utils.Validator.validateEmail
+import com.ocanha.retrofitcomkotlin.utils.Validator.validatePassword
 import com.ocanha.retrofitcomkotlin.viewmodel.login.LoginViewModel
 import com.ocanha.retrofitcomkotlin.viewmodel.login.LoginViewModelFactory
 
@@ -36,6 +40,21 @@ class LoginActivity : AppCompatActivity() {
 
         btnLogin.setOnClickListener {
 
+            if (!validateEmail(edtEmail.text.toString())) {
+
+                edtEmail.error = "Preencha o email corretamente"
+                edtEmail.requestFocus()
+                return@setOnClickListener
+
+            }
+
+            if (!validatePassword(edtPassword.text.toString())) {
+
+                edtPassword.error = "Preencha a senha de acesso"
+                edtPassword.requestFocus()
+                return@setOnClickListener
+
+            }
 
         }
 

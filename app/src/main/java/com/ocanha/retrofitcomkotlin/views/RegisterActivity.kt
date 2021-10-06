@@ -2,9 +2,12 @@ package com.ocanha.retrofitcomkotlin.views
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.ocanha.retrofitcomkotlin.databinding.ActivityRegisterBinding
+import com.ocanha.retrofitcomkotlin.model.User
 import com.ocanha.retrofitcomkotlin.repositories.UserRepository
 import com.ocanha.retrofitcomkotlin.rest.RetrofitService
 import com.ocanha.retrofitcomkotlin.utils.Validator
@@ -38,23 +41,55 @@ class RegisterActivity : AppCompatActivity() {
             if(!Validator.validateName(edtName.text.toString())){
                 edtName.error = "Preencha o nome completo"
                 edtName.requestFocus()
-                return@SetOnClickListener
+                return@setOnClickListener
             }
 
             if(!Validator.validateEmail(edtEmail.text.toString())){
                 edtEmail.error = "Preencha o email corretamente"
                 edtEmail.requestFocus()
-                return@SetOnClickListener
+                return@setOnClickListener
             }
 
             if(!Validator.validatePassword(edtPassword.text.toString())){
                 edtPassword.error = "Preencha a senha de acesso"
                 edtPassword.requestFocus()
-                return@SetOnClickListener
+                return@setOnClickListener
             }
 
 
+            viewModel.register(
+                User(
+                    edtName.text.toString(),
+                    edtEmail.text.toString(),
+                    edtPassword.text.toString()
+                )
+            )
+
+            loadingView.show()
+
         }
+
+    }
+    override fun onStart() {
+        super.onStart()
+
+        viewModel.status.observe(this, Observer {
+            if (it) {
+                Toast.makeText(
+                    this,
+                    "Usuário registrado com sucesso!",
+                    Toast.LENGTH_SHORT
+                ).show()
+                finish()
+            } else {
+                Toast.makeText(
+                    this,
+                    "Erro ao registrar usuário. Tente novamente.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                _binding.loadingView.dismiss()
+            }
+        })
 
     }
 
